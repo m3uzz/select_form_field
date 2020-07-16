@@ -12,7 +12,7 @@ In the `pubspec.yaml` of your flutter project, add the following dependency:
 ```yaml
 dependencies:
   ...
-  select_form_field: "^0.1.0"
+  select_form_field: "^0.1.1"
 ```
 
 In your library add the following import:
