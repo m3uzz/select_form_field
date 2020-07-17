@@ -365,30 +365,35 @@ class SelectFormField extends FormField<String> {
 
 class _SelectFormFieldState extends FormFieldState<String> {
   TextEditingController _labelController = TextEditingController();
-  TextEditingController _valueController;
+  TextEditingController _stateController;
   Map<String, dynamic> _item;
 
   @override
   SelectFormField get widget => super.widget as SelectFormField;
 
   TextEditingController get _effectiveController =>
-      widget.controller ?? _valueController;
+      widget.controller ?? _stateController;
 
   @override
   void initState() {
     super.initState();
 
     if (widget.controller == null) {
-      _valueController = TextEditingController(text: widget.initialValue);
+      _stateController = TextEditingController(text: widget.initialValue);
     } else {
       widget.controller.addListener(_handleControllerChanged);
     }
 
-    _item = widget.items.firstWhere(
-      (lmItem) => lmItem['value'] == _effectiveController.text,
-      orElse: () => widget.items[0],
-    );
-    _labelController.text = _item['label'];
+    if (_effectiveController.text != null && _effectiveController.text != '') {
+      _item = widget.items.firstWhere(
+        (lmItem) => lmItem['value'] == _effectiveController.text,
+        orElse: () => null,
+      );
+
+      if (_item != null) {
+        _labelController.text = _item['label'];
+      }
+    }
   }
 
   @override
@@ -400,7 +405,7 @@ class _SelectFormFieldState extends FormFieldState<String> {
       widget.controller?.addListener(_handleControllerChanged);
 
       if (oldWidget.controller != null && widget.controller == null) {
-        _valueController =
+        _stateController =
             TextEditingController.fromValue(oldWidget.controller.value);
       }
 
@@ -408,16 +413,21 @@ class _SelectFormFieldState extends FormFieldState<String> {
         setValue(widget.controller.text);
 
         if (oldWidget.controller == null) {
-          _valueController = null;
+          _stateController = null;
         }
       }
     }
 
-    _item = widget.items.firstWhere(
-      (lmItem) => lmItem['value'] == _effectiveController.text,
-      orElse: () => widget.items[0],
-    );
-    _labelController.text = _item['label'];
+    if (_effectiveController.text != null && _effectiveController.text != '') {
+      _item = widget.items.firstWhere(
+        (lmItem) => lmItem['value'] == _effectiveController.text,
+        orElse: () => null,
+      );
+
+      if (_item != null) {
+        _labelController.text = _item['label'];
+      }
+    }
   }
 
   @override
@@ -459,12 +469,16 @@ class _SelectFormFieldState extends FormFieldState<String> {
     );
 
     if (lvItemPicked != null && lvItemPicked != value) {
-      _item = widget.items
-          .firstWhere((lmItem) => lmItem['value'] == _effectiveController.text);
-      _labelController.text = _item['label'];
+      _item = widget.items.firstWhere(
+        (lmItem) => lmItem['value'] == lvItemPicked,
+        orElse: () => null,
+      );
 
-      _effectiveController.text = lvItemPicked;
-      onChangedHandler(lvItemPicked);
+      if (_item != null) {
+        _labelController.text = _item['label'];
+        _effectiveController.text = lvItemPicked;
+        onChangedHandler(lvItemPicked);
+      }
     }
   }
 

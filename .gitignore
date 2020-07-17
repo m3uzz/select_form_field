@@ -29,8 +29,6 @@
 .pub-cache/
 .pub/
 build/
-#example/
-#doc/
 pubspec.lock
 
 # Android related

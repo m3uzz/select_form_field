@@ -8,24 +8,21 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Flutter SelectFormField Demo',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      home: MyHomePage(title: 'Flutter SelectFormField Demo'),
+      home: MyHomePage(),
     );
   }
 }
 
 class MyHomePage extends StatefulWidget {
-  MyHomePage({Key key, this.title}) : super(key: key);
-
-  final String title;
+  MyHomePage({Key key}) : super(key: key);
 
   @override
   _MyHomePageState createState() => _MyHomePageState();
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  TextEditingController _controller;
+  //String _initialValue;
   String _value = '';
   final List<Map<String, dynamic>> _items = [
     {
@@ -48,10 +45,31 @@ class _MyHomePageState extends State<MyHomePage> {
   ];
 
   @override
+  void initState() {
+    super.initState();
+
+    //_initialValue = 'starValue';
+    _controller = TextEditingController(text: 'starValue');
+
+    _getValue();
+  }
+
+  /// This implementation is just to simulate a load data behavior
+  /// from a data base sqlite or from a API
+  Future<void> _getValue() async {
+    await Future.delayed(const Duration(seconds: 3), () {
+      setState(() {
+        //_initialValue = 'circleValue';
+        _controller.text = 'circleValue';
+      });
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.title),
+        title: Text('Flutter SelectFormField Demo'),
       ),
       body: SingleChildScrollView(
         padding: EdgeInsets.only(left: 20, right: 20, top: 10),
@@ -59,13 +77,20 @@ class _MyHomePageState extends State<MyHomePage> {
           child: Column(
             children: <Widget>[
               SelectFormField(
-                initialValue: 'circleValue',
+                controller: _controller,
+                //initialValue: _initialValue,
                 icon: Icon(Icons.format_shapes),
                 labelText: 'Shape',
                 items: _items,
                 onChanged: (val) => setState(() => _value = val),
                 onSaved: (val) => setState(() => _value = val),
               ),
+              SizedBox(height: 30),
+              Text(
+                'SelectFormField data value:',
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
+              SizedBox(height: 10),
               Text(_value),
             ],
           ),

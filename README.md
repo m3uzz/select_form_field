@@ -2,7 +2,7 @@
 
 [![pub package](https://img.shields.io/pub/v/select_form_field.svg)](https://pub.dartlang.org/packages/select_form_field)
 
-A Flutter select field widget. It shows a list of options in a dropdown menu.
+A Flutter select field widget. It shows a list of options in a dropdown menu.\
 This widget extend TextField and has a similar bihavior as TextFormField
 
 ## Usage
@@ -12,7 +12,7 @@ In the `pubspec.yaml` of your flutter project, add the following dependency:
 ```yaml
 dependencies:
   ...
-  select_form_field: "^0.1.1"
+  select_form_field: "^1.0.0"
 ```
 
 In your library add the following import:
@@ -35,19 +35,19 @@ Set items using a List map passing:
 ``` dart
 final List<Map<String, dynamic>> _items = [
   {
-    'value': 'box',
-    'label': 'Box',
+    'value': 'boxValue',
+    'label': 'Box Label',
     'icon': Icon(Icons.stop),
   },
   {
-    'value': 'circle',
-    'label': 'Circle',
+    'value': 'circleValue',
+    'label': 'Circle Label',
     'icon': Icon(Icons.fiber_manual_record),
     'textStyle': TextStyle(color: Colors.red),
   },
   {
-    'value': 'star',
-    'label': 'Star',
+    'value': 'starValue',
+    'label': 'Star Label',
     'enable': false,
     'icon': Icon(Icons.grade),
   },
@@ -65,4 +65,8 @@ SelectFormField(
 );
 ```
 
-![Overview](https://raw.githubusercontent.com/m3uzz/select_form_field/master/doc/images/select_form_field.png)
+The result of val in `onChanged`, `validator` and `onSaved` will be a String.\
+So, if you tap on Box Label item on select menu the result will be `boxValue`.
+
+## Preview
+![Overview](https://raw.githubusercontent.com/m3uzz/select_form_field/master/doc/images/select_form_field.gif)
