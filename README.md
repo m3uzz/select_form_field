@@ -3,7 +3,7 @@
 [![pub package](https://img.shields.io/pub/v/select_form_field.svg)](https://pub.dartlang.org/packages/select_form_field)
 
 A Flutter select field widget. It shows a list of options in a dropdown menu.\
-This widget extend TextField and has a similar bihavior as TextFormField
+This widget extend TextField and has a similar behavior as TextFormField
 
 ## Usage
 
@@ -23,7 +23,7 @@ import 'package:select_form_field/select_form_field.dart';
 
 For help getting started with Flutter, view the online [documentation](https://flutter.io/).
 
-### Exemple
+## Example
 
 Set items using a List map passing:
 * `value`: [String], 

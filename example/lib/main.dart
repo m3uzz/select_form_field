@@ -21,9 +21,13 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  GlobalKey<FormState> _oFormKey = GlobalKey<FormState>();
   TextEditingController _controller;
   //String _initialValue;
-  String _value = '';
+  String _valueChanged = '';
+  String _valueToValidate = '';
+  String _valueSaved = '';
+
   final List<Map<String, dynamic>> _items = [
     {
       'value': 'boxValue',
@@ -74,6 +78,7 @@ class _MyHomePageState extends State<MyHomePage> {
       body: SingleChildScrollView(
         padding: EdgeInsets.only(left: 20, right: 20, top: 10),
         child: Form(
+          key: _oFormKey,
           child: Column(
             children: <Widget>[
               SelectFormField(
@@ -82,16 +87,59 @@ class _MyHomePageState extends State<MyHomePage> {
                 icon: Icon(Icons.format_shapes),
                 labelText: 'Shape',
                 items: _items,
-                onChanged: (val) => setState(() => _value = val),
-                onSaved: (val) => setState(() => _value = val),
+                onChanged: (val) => setState(() => _valueChanged = val),
+                validator: (val) {
+                  setState(() => _valueToValidate = val);
+                  return null;
+                },
+                onSaved: (val) => setState(() => _valueSaved = val),
               ),
               SizedBox(height: 30),
               Text(
-                'SelectFormField data value:',
+                'SelectFormField data value onChanged:',
                 style: TextStyle(fontWeight: FontWeight.bold),
               ),
               SizedBox(height: 10),
-              Text(_value),
+              SelectableText(_valueChanged),
+              SizedBox(height: 30),
+              RaisedButton(
+                onPressed: () {
+                  final loForm = _oFormKey.currentState;
+
+                  if (loForm.validate()) {
+                    loForm.save();
+                  }
+                },
+                child: Text('Submit'),
+              ),
+              SizedBox(height: 30),
+              Text(
+                'SelectFormField data value validator:',
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
+              SizedBox(height: 10),
+              SelectableText(_valueToValidate),
+              SizedBox(height: 30),
+              Text(
+                'SelectFormField data value onSaved:',
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
+              SizedBox(height: 10),
+              SelectableText(_valueSaved),
+              SizedBox(height: 30),
+              RaisedButton(
+                onPressed: () {
+                  final loForm = _oFormKey.currentState;
+                  loForm.reset();
+
+                  setState(() {
+                    _valueChanged = '';
+                    _valueToValidate = '';
+                    _valueSaved = '';
+                  });
+                },
+                child: Text('Reset'),
+              ),
             ],
           ),
         ),
