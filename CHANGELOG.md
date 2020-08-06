@@ -1,3 +1,7 @@
+## 1.0.1 - 2020-08-05
+
+* Fixed issue #1 - text render overflowed
+
 ## 1.0.0 - 2020-07-17
 
 * Fixed use of widget with empty initial value

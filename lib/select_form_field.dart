@@ -493,7 +493,14 @@ class _SelectFormFieldState extends FormFieldState<String> {
         child: Row(
           children: [
             lmElement['icon'] ?? SizedBox(width: 5),
-            Text(lmElement['label'] ?? lmElement['value']),
+            Expanded(
+              child: Text(
+                lmElement['label'] ?? lmElement['value'],
+                overflow: TextOverflow.fade,
+                maxLines: 1,
+                softWrap: false,
+              ),
+            ),
           ],
         ),
       );

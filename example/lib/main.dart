@@ -36,7 +36,7 @@ class _MyHomePageState extends State<MyHomePage> {
     },
     {
       'value': 'circleValue',
-      'label': 'Circle Label',
+      'label': 'Circle Label Loooooooooooooooooooong text',
       'icon': Icon(Icons.fiber_manual_record),
       'textStyle': TextStyle(color: Colors.red),
     },
