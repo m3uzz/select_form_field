@@ -12,7 +12,7 @@ In the `pubspec.yaml` of your flutter project, add the following dependency:
 ```yaml
 dependencies:
   ...
-  select_form_field: "^1.0.1"
+  select_form_field: "^1.1.0"
 ```
 
 In your library add the following import:
@@ -56,6 +56,7 @@ final List<Map<String, dynamic>> _items = [
 
 ``` dart
 SelectFormField(
+  type: SelectFormField.dropdown, // or can be dialog
   initialValue: 'circle',
   icon: Icon(Icons.format_shapes),
   labelText: 'Shape',

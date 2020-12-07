@@ -7,6 +7,8 @@ library select_form_field;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+enum SelectFormFieldType { dropdown, dialog }
+
 /// A [SelectFormField] that contains a [TextField].
 ///
 /// This is a convenience widget that wraps a [TextField] widget in a
@@ -126,10 +128,16 @@ class SelectFormField extends FormField<String> {
   /// and [new TextField], the constructor.
   SelectFormField({
     Key key,
+    this.type = SelectFormFieldType.dropdown,
     this.controller,
     this.icon,
+    this.changeIcon = false,
     this.labelText,
     this.hintText,
+    this.dialogTitle,
+    this.dialogSearchHint,
+    this.dialogCancelBtn,
+    this.enableSearch = false,
     this.items,
     String initialValue,
     FocusNode focusNode,
@@ -207,7 +215,7 @@ class SelectFormField extends FormField<String> {
               controller != null ? controller.text : (initialValue ?? ''),
           onSaved: onSaved,
           validator: validator,
-          autovalidate: autovalidate,
+          //autovalidate: autovalidate,
           enabled: enabled,
           builder: (FormFieldState<String> field) {
             final _SelectFormFieldState state = field as _SelectFormFieldState;
@@ -215,7 +223,7 @@ class SelectFormField extends FormField<String> {
             final InputDecoration effectiveDecoration = (decoration ??
                 InputDecoration(
                   labelText: labelText,
-                  icon: icon,
+                  icon: state._icon ?? icon,
                   hintText: hintText,
                   suffixIcon: Container(
                     width: 10,
@@ -238,57 +246,81 @@ class SelectFormField extends FormField<String> {
               field.didChange(value);
             }
 
-            return TextField(
-              controller: state._labelController,
-              focusNode: focusNode,
-              decoration: effectiveDecoration.copyWith(
-                errorText: field.errorText,
-              ),
-              keyboardType: keyboardType,
-              textInputAction: textInputAction,
-              style: style,
-              strutStyle: strutStyle,
-              textAlign: textAlign,
-              textAlignVertical: textAlignVertical,
-              textDirection: textDirection,
-              textCapitalization: textCapitalization,
-              autofocus: autofocus,
-              toolbarOptions: toolbarOptions,
-              readOnly: true,
-              showCursor: showCursor,
-              obscureText: obscureText,
-              autocorrect: autocorrect,
-              smartDashesType: smartDashesType ??
-                  (obscureText
-                      ? SmartDashesType.disabled
-                      : SmartDashesType.enabled),
-              smartQuotesType: smartQuotesType ??
-                  (obscureText
-                      ? SmartQuotesType.disabled
-                      : SmartQuotesType.enabled),
-              enableSuggestions: enableSuggestions,
-              maxLengthEnforced: maxLengthEnforced,
-              maxLines: maxLines,
-              minLines: minLines,
-              expands: expands,
-              maxLength: maxLength,
-              onChanged: onChangedHandler,
-              onTap: readOnly ? null : state._showSelectFormFieldMenu,
-              onEditingComplete: onEditingComplete,
-              onSubmitted: onFieldSubmitted,
-              inputFormatters: inputFormatters,
-              enabled: enabled,
-              cursorWidth: cursorWidth,
-              cursorRadius: cursorRadius,
-              cursorColor: cursorColor,
-              scrollPadding: scrollPadding,
-              scrollPhysics: scrollPhysics,
-              keyboardAppearance: keyboardAppearance,
-              enableInteractiveSelection: enableInteractiveSelection,
-              buildCounter: buildCounter,
-            );
+            Widget buildField(SelectFormFieldType peType) {
+              Function lfOnTap;
+
+              switch (peType) {
+                case SelectFormFieldType.dialog:
+                  lfOnTap = state._showSelectFormFieldDialog;
+                  break;
+                default:
+                  lfOnTap = state._showSelectFormFieldMenu;
+              }
+
+              return TextField(
+                controller: state._labelController,
+                focusNode: focusNode,
+                decoration: effectiveDecoration.copyWith(
+                  errorText: field.errorText,
+                ),
+                keyboardType: keyboardType,
+                textInputAction: textInputAction,
+                style: style,
+                strutStyle: strutStyle,
+                textAlign: textAlign,
+                textAlignVertical: textAlignVertical,
+                textDirection: textDirection,
+                textCapitalization: textCapitalization,
+                autofocus: autofocus,
+                toolbarOptions: toolbarOptions,
+                readOnly: true,
+                showCursor: showCursor,
+                obscureText: obscureText,
+                autocorrect: autocorrect,
+                smartDashesType: smartDashesType ??
+                    (obscureText
+                        ? SmartDashesType.disabled
+                        : SmartDashesType.enabled),
+                smartQuotesType: smartQuotesType ??
+                    (obscureText
+                        ? SmartQuotesType.disabled
+                        : SmartQuotesType.enabled),
+                enableSuggestions: enableSuggestions,
+                maxLengthEnforced: maxLengthEnforced,
+                maxLines: maxLines,
+                minLines: minLines,
+                expands: expands,
+                maxLength: maxLength,
+                onChanged: onChangedHandler,
+                onTap: readOnly ? null : lfOnTap,
+                onEditingComplete: onEditingComplete,
+                onSubmitted: onFieldSubmitted,
+                inputFormatters: inputFormatters,
+                enabled: enabled,
+                cursorWidth: cursorWidth,
+                cursorRadius: cursorRadius,
+                cursorColor: cursorColor,
+                scrollPadding: scrollPadding,
+                scrollPhysics: scrollPhysics,
+                keyboardAppearance: keyboardAppearance,
+                enableInteractiveSelection: enableInteractiveSelection,
+                buildCounter: buildCounter,
+              );
+            }
+
+            switch (type) {
+              case SelectFormFieldType.dialog:
+                return buildField(SelectFormFieldType.dialog);
+                break;
+              default:
+                return buildField(SelectFormFieldType.dropdown);
+            }
           },
         );
+
+  /// The SelectFormField type:
+  /// [dropdown] or [dialog].
+  final SelectFormFieldType type;
 
   /// Controls the text being edited.
   ///
@@ -313,6 +345,12 @@ class SelectFormField extends FormField<String> {
   /// See [Icon], [ImageIcon].
   final Widget icon;
 
+  /// If true and the item list has icon property, when one item is selected the
+  /// field icon will be changed as well.
+  ///
+  /// Default is false.
+  final bool changeIcon;
+
   /// Text that describes the input field.
   ///
   /// When the input field is empty and unfocused, the label is displayed on
@@ -329,9 +367,24 @@ class SelectFormField extends FormField<String> {
   /// [isEmpty] and either (a) [labelText] is null or (b) the input has the focus.
   final String hintText;
 
+  /// The title of the dialog window.
+  final String dialogTitle;
+
+  /// The search field hint text
+  final String dialogSearchHint;
+
+  /// The cancel button label on dialog
+  final String dialogCancelBtn;
+
+  /// Param to set search feature. The default value is true.
+  ///
+  /// If enable, an icon button will be displayed on top right of the dialog
+  /// window to show a text field to type the icon name to search of.
+  final bool enableSearch;
+
   final ValueChanged<String> onChanged;
 
-  /// A list map of items to show on a dropdown menu to select.
+  /// A list map of items to show as options to select.
   ///
   /// or a list map as below:
   ///
@@ -366,6 +419,7 @@ class SelectFormField extends FormField<String> {
 class _SelectFormFieldState extends FormFieldState<String> {
   TextEditingController _labelController = TextEditingController();
   TextEditingController _stateController;
+  Widget _icon;
   Map<String, dynamic> _item;
 
   @override
@@ -386,12 +440,16 @@ class _SelectFormFieldState extends FormFieldState<String> {
 
     if (_effectiveController.text != null && _effectiveController.text != '') {
       _item = widget.items.firstWhere(
-        (lmItem) => lmItem['value'] == _effectiveController.text,
+        (lmItem) => lmItem['value'].toString() == _effectiveController.text,
         orElse: () => null,
       );
 
       if (_item != null) {
         _labelController.text = _item['label'];
+
+        if (widget.changeIcon && _item['icon'] != null && _item['icon'] != '') {
+          _icon = _item['icon'];
+        }
       }
     }
   }
@@ -426,6 +484,10 @@ class _SelectFormFieldState extends FormFieldState<String> {
 
       if (_item != null) {
         _labelController.text = _item['label'];
+
+        if (widget.changeIcon && _item['icon'] != null && _item['icon'] != '') {
+          _icon = _item['icon'];
+        }
       }
     }
   }
@@ -461,24 +523,61 @@ class _SelectFormFieldState extends FormFieldState<String> {
   }
 
   Future<void> _showSelectFormFieldMenu() async {
-    String lvItemPicked = await showMenu<dynamic>(
+    String lvPicked = await showMenu<dynamic>(
       context: context,
       position: _buttonMenuPosition(context),
       initialValue: value,
       items: _renderItems(),
     );
 
-    if (lvItemPicked != null && lvItemPicked != value) {
+    if (lvPicked != null && lvPicked != value) {
       _item = widget.items.firstWhere(
-        (lmItem) => lmItem['value'] == lvItemPicked,
+        (lmItem) => lmItem['value'] == lvPicked,
         orElse: () => null,
       );
 
       if (_item != null) {
         _labelController.text = _item['label'];
-        _effectiveController.text = lvItemPicked;
-        onChangedHandler(lvItemPicked);
+        _effectiveController.text = lvPicked.toString();
+
+        if (widget.changeIcon && _item['icon'] != null && _item['icon'] != '') {
+          setState(() {
+            _icon = _item['icon'];
+          });
+        }
+
+        onChangedHandler(lvPicked.toString());
       }
+    }
+  }
+
+  Future<void> _showSelectFormFieldDialog() async {
+    Map<String, dynamic> lvPicked = await showDialog<dynamic>(
+      context: context,
+      builder: (BuildContext context) {
+        return ItemPickerDialog(
+          widget.dialogTitle,
+          widget.items,
+          widget.enableSearch,
+          widget.dialogSearchHint,
+          widget.dialogCancelBtn,
+        );
+      },
+    );
+
+    if (lvPicked is Map<String, dynamic>) {
+      _labelController.text = lvPicked['label'];
+      _effectiveController.text = lvPicked['value'].toString();
+
+      if (widget.changeIcon &&
+          lvPicked['icon'] != null &&
+          lvPicked['icon'] != '') {
+        setState(() {
+          _icon = lvPicked['icon'];
+        });
+      }
+
+      onChangedHandler(lvPicked['value'].toString());
     }
   }
 
@@ -532,5 +631,178 @@ class _SelectFormFieldState extends FormFieldState<String> {
     );
 
     return loPosition;
+  }
+}
+
+class ItemPickerDialog extends StatefulWidget {
+  final String title;
+  final String searchHint;
+  final String cancelBtn;
+  final List<Map<String, dynamic>> items;
+  final bool enableSearch;
+
+  ItemPickerDialog(this.title, this.items,
+      [this.enableSearch = true, this.searchHint = '', this.cancelBtn]);
+
+  @override
+  _ItemPickerDialogState createState() => new _ItemPickerDialogState();
+}
+
+class _ItemPickerDialogState extends State<ItemPickerDialog> {
+  TextEditingController _oCtrlSearchQuery = TextEditingController();
+  List<Map<String, dynamic>> _lItemListShow = <Map<String, dynamic>>[];
+  List<Map<String, dynamic>> _lItemListOriginal = <Map<String, dynamic>>[];
+  int _iQtItems = -1;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _oCtrlSearchQuery.addListener(_search);
+    _lItemListOriginal.clear();
+    _lItemListShow.clear();
+    _lItemListOriginal.addAll(widget.items);
+    _lItemListShow.addAll(_lItemListOriginal);
+    _iQtItems = _lItemListOriginal.length;
+  }
+
+  @override
+  void dispose() {
+    _oCtrlSearchQuery.dispose();
+
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      title: _titleDialog(),
+      content: Container(
+        width: double.maxFinite,
+        child: _content(),
+      ),
+      actions: <Widget>[
+        FlatButton(
+          padding: EdgeInsets.only(right: 20),
+          onPressed: () => Navigator.of(context).pop(),
+          child: Text(widget.cancelBtn ?? 'CANCEL'),
+        ),
+      ],
+    );
+  }
+
+  Widget _titleDialog() {
+    if (!widget.enableSearch) {
+      return Text(widget.title ?? '');
+    }
+
+    return Column(
+      children: <Widget>[
+        Text(widget.title),
+        TextField(
+          controller: _oCtrlSearchQuery,
+          decoration: InputDecoration(
+            icon: Icon(Icons.search),
+            hintText: widget.searchHint,
+            //hintStyle: TextStyle(color: Colors.black),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _content() {
+    if (_iQtItems == -1) {
+      return Center(child: CircularProgressIndicator());
+    } else if (_iQtItems == 0) {
+      return _showEmpty();
+    }
+
+    return ListItem(_lItemListShow);
+  }
+
+  Widget _showEmpty() {
+    return Stack(
+      children: <Widget>[
+        Align(
+          alignment: Alignment(0, -0.5),
+          child: Icon(
+            Icons.category,
+            size: 50,
+          ),
+        ),
+      ],
+    );
+  }
+
+  void _search() {
+    String lsQuery = _oCtrlSearchQuery.text;
+
+    if (lsQuery.length > 2) {
+      lsQuery.toLowerCase();
+
+      String lsValue;
+
+      setState(() {
+        _lItemListShow.clear();
+
+        _lItemListOriginal.forEach((loCredential) {
+          lsValue = loCredential['label'].toLowerCase();
+
+          if (lsValue.contains(lsQuery)) {
+            _lItemListShow.add(loCredential);
+          }
+        });
+
+        _iQtItems = _lItemListShow.length;
+      });
+    } else {
+      setState(() {
+        _lItemListShow.clear();
+
+        _lItemListOriginal.forEach((loCredential) {
+          _lItemListShow.add(loCredential);
+        });
+
+        _iQtItems = _lItemListShow.length;
+      });
+    }
+  }
+}
+
+class ListItem extends StatelessWidget {
+  final List<Map<String, dynamic>> _lItens;
+
+  ListItem(this._lItens);
+
+  @override
+  Widget build(BuildContext context) {
+    return ListView(
+      children: _itemList(context),
+    );
+  }
+
+  List<Widget> _itemList(context) {
+    List<Widget> llItems = <Widget>[];
+
+    if (_lItens != null) {
+      _lItens.forEach((lmItem) {
+        Widget loIten = ListTile(
+          leading: lmItem['icon'] ?? null,
+          title: Text(
+            lmItem['label'] ?? lmItem['value'],
+            style: lmItem['textStyle'] ?? lmItem['textStyle'],
+          ),
+          enabled: lmItem['enable'] ?? true,
+          onTap: () => Navigator.pop(context, lmItem),
+        );
+
+        llItems.add(loIten);
+      });
+    } else {
+      llItems.add(SizedBox(height: 0));
+    }
+
+    return llItems;
   }
 }

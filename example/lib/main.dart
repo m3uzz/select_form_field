@@ -82,10 +82,16 @@ class _MyHomePageState extends State<MyHomePage> {
           child: Column(
             children: <Widget>[
               SelectFormField(
+                //type: SelectFormFieldType.dialog,
                 controller: _controller,
                 //initialValue: _initialValue,
                 icon: Icon(Icons.format_shapes),
                 labelText: 'Shape',
+                changeIcon: true,
+                dialogTitle: 'Pick a item',
+                dialogCancelBtn: 'CANCEL',
+                enableSearch: true,
+                dialogSearchHint: 'Search item',
                 items: _items,
                 onChanged: (val) => setState(() => _valueChanged = val),
                 validator: (val) {
