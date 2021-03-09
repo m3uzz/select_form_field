@@ -127,7 +127,7 @@ class SelectFormField extends FormField<String> {
   /// For documentation about the various parameters, see the [TextField] class
   /// and [new TextField], the constructor.
   SelectFormField({
-    Key key,
+    Key? key,
     this.type = SelectFormFieldType.dropdown,
     this.controller,
     this.icon,
@@ -139,68 +139,57 @@ class SelectFormField extends FormField<String> {
     this.dialogCancelBtn,
     this.enableSearch = false,
     this.items,
-    String initialValue,
-    FocusNode focusNode,
-    InputDecoration decoration,
-    TextInputType keyboardType,
+    String? initialValue,
+    FocusNode? focusNode,
+    InputDecoration? decoration,
+    TextInputType? keyboardType,
     TextCapitalization textCapitalization = TextCapitalization.none,
-    TextInputAction textInputAction,
-    TextStyle style,
-    StrutStyle strutStyle,
-    TextDirection textDirection,
+    TextInputAction? textInputAction,
+    TextStyle? style,
+    StrutStyle? strutStyle,
+    TextDirection? textDirection,
     TextAlign textAlign = TextAlign.start,
-    TextAlignVertical textAlignVertical,
+    TextAlignVertical? textAlignVertical,
     bool autofocus = false,
     bool readOnly = false,
-    ToolbarOptions toolbarOptions,
-    bool showCursor,
+    ToolbarOptions? toolbarOptions,
+    bool? showCursor,
     bool obscureText = false,
     bool autocorrect = true,
-    SmartDashesType smartDashesType,
-    SmartQuotesType smartQuotesType,
+    SmartDashesType? smartDashesType,
+    SmartQuotesType? smartQuotesType,
     bool enableSuggestions = true,
     bool autovalidate = false,
     bool maxLengthEnforced = true,
     int maxLines = 1,
-    int minLines,
+    int? minLines,
     bool expands = false,
-    int maxLength,
+    int? maxLength,
     this.onChanged,
     //GestureTapCallback onTap,
-    VoidCallback onEditingComplete,
-    ValueChanged<String> onFieldSubmitted,
-    FormFieldSetter<String> onSaved,
-    FormFieldValidator<String> validator,
-    List<TextInputFormatter> inputFormatters,
+    VoidCallback? onEditingComplete,
+    ValueChanged<String>? onFieldSubmitted,
+    FormFieldSetter<String>? onSaved,
+    FormFieldValidator<String>? validator,
+    List<TextInputFormatter>? inputFormatters,
     bool enabled = true,
     double cursorWidth = 2.0,
-    Radius cursorRadius,
-    Color cursorColor,
-    Brightness keyboardAppearance,
+    Radius? cursorRadius,
+    Color? cursorColor,
+    Brightness? keyboardAppearance,
     EdgeInsets scrollPadding = const EdgeInsets.all(20.0),
     bool enableInteractiveSelection = true,
-    InputCounterWidgetBuilder buildCounter,
-    ScrollPhysics scrollPhysics,
+    InputCounterWidgetBuilder? buildCounter,
+    ScrollPhysics? scrollPhysics,
   })  : assert(initialValue == null || controller == null),
-        assert(items != null),
-        assert(textAlign != null),
-        assert(autofocus != null),
-        assert(readOnly != null),
-        assert(obscureText != null),
-        assert(autocorrect != null),
-        assert(enableSuggestions != null),
-        assert(autovalidate != null),
-        assert(maxLengthEnforced != null),
-        assert(scrollPadding != null),
-        assert(maxLines == null || maxLines > 0),
+        assert(maxLines > 0),
         assert(minLines == null || minLines > 0),
         assert(
-          (maxLines == null) || (minLines == null) || (maxLines >= minLines),
+          (minLines == null) || (maxLines >= minLines),
           "minLines can't be greater than maxLines",
         ),
-        assert(expands != null),
         assert(
-          !expands || (maxLines == null && minLines == null),
+          !expands || minLines == null,
           'minLines and maxLines must be null when expands is true.',
         ),
         assert(
@@ -208,7 +197,6 @@ class SelectFormField extends FormField<String> {
           'Obscured fields cannot be multiline.',
         ),
         assert(maxLength == null || maxLength > 0),
-        assert(enableInteractiveSelection != null),
         super(
           key: key,
           initialValue:
@@ -228,8 +216,7 @@ class SelectFormField extends FormField<String> {
                   suffixIcon: Container(
                     width: 10,
                     margin: EdgeInsets.all(0),
-                    child: FlatButton(
-                      padding: EdgeInsets.only(top: 15),
+                    child: TextButton(
                       onPressed: () {},
                       child: Icon(Icons.arrow_drop_down),
                     ),
@@ -247,14 +234,16 @@ class SelectFormField extends FormField<String> {
             }
 
             Widget buildField(SelectFormFieldType peType) {
-              Function lfOnTap;
+              var lfOnTap;
 
-              switch (peType) {
-                case SelectFormFieldType.dialog:
-                  lfOnTap = state._showSelectFormFieldDialog;
-                  break;
-                default:
-                  lfOnTap = state._showSelectFormFieldMenu;
+              if (readOnly == false) {
+                switch (peType) {
+                  case SelectFormFieldType.dialog:
+                    lfOnTap = state._showSelectFormFieldDialog;
+                    break;
+                  default:
+                    lfOnTap = state._showSelectFormFieldMenu;
+                }
               }
 
               return TextField(
@@ -286,7 +275,7 @@ class SelectFormField extends FormField<String> {
                         ? SmartQuotesType.disabled
                         : SmartQuotesType.enabled),
                 enableSuggestions: enableSuggestions,
-                maxLengthEnforced: maxLengthEnforced,
+                //maxLengthEnforced: maxLengthEnforced,
                 maxLines: maxLines,
                 minLines: minLines,
                 expands: expands,
@@ -311,7 +300,6 @@ class SelectFormField extends FormField<String> {
             switch (type) {
               case SelectFormFieldType.dialog:
                 return buildField(SelectFormFieldType.dialog);
-                break;
               default:
                 return buildField(SelectFormFieldType.dropdown);
             }
@@ -326,7 +314,7 @@ class SelectFormField extends FormField<String> {
   ///
   /// If null, this widget will create its own [TextEditingController] and
   /// initialize its [TextEditingController.text] with [initialValue].
-  final TextEditingController controller;
+  final TextEditingController? controller;
 
   /// An icon to show before the input field and outside of the decoration's
   /// container.
@@ -343,7 +331,7 @@ class SelectFormField extends FormField<String> {
   /// [errorText], and [counterText].
   ///
   /// See [Icon], [ImageIcon].
-  final Widget icon;
+  final Widget? icon;
 
   /// If true and the item list has icon property, when one item is selected the
   /// field icon will be changed as well.
@@ -358,23 +346,23 @@ class SelectFormField extends FormField<String> {
   /// text may be entered in the input field). When the input field receives
   /// focus (or if the field is non-empty), the label moves above (i.e.,
   /// vertically adjacent to) the input field.
-  final String labelText;
+  final String? labelText;
 
   /// Text that suggests what sort of input the field accepts.
   ///
   /// Displayed on top of the input [child] (i.e., at the same location on the
   /// screen where text may be entered in the input [child]) when the input
   /// [isEmpty] and either (a) [labelText] is null or (b) the input has the focus.
-  final String hintText;
+  final String? hintText;
 
   /// The title of the dialog window.
-  final String dialogTitle;
+  final String? dialogTitle;
 
   /// The search field hint text
-  final String dialogSearchHint;
+  final String? dialogSearchHint;
 
   /// The cancel button label on dialog
-  final String dialogCancelBtn;
+  final String? dialogCancelBtn;
 
   /// Param to set search feature. The default value is true.
   ///
@@ -382,7 +370,7 @@ class SelectFormField extends FormField<String> {
   /// window to show a text field to type the icon name to search of.
   final bool enableSearch;
 
-  final ValueChanged<String> onChanged;
+  final ValueChanged<String>? onChanged;
 
   /// A list map of items to show as options to select.
   ///
@@ -410,7 +398,7 @@ class SelectFormField extends FormField<String> {
   ///  ...
   /// ];
   /// ```
-  final List<Map<String, dynamic>> items;
+  final List<Map<String, dynamic>>? items;
 
   @override
   _SelectFormFieldState createState() => _SelectFormFieldState();
@@ -418,14 +406,14 @@ class SelectFormField extends FormField<String> {
 
 class _SelectFormFieldState extends FormFieldState<String> {
   TextEditingController _labelController = TextEditingController();
-  TextEditingController _stateController;
-  Widget _icon;
-  Map<String, dynamic> _item;
+  TextEditingController? _stateController;
+  Widget? _icon;
+  Map<String, dynamic>? _item;
 
   @override
   SelectFormField get widget => super.widget as SelectFormField;
 
-  TextEditingController get _effectiveController =>
+  TextEditingController? get _effectiveController =>
       widget.controller ?? _stateController;
 
   @override
@@ -435,20 +423,22 @@ class _SelectFormFieldState extends FormFieldState<String> {
     if (widget.controller == null) {
       _stateController = TextEditingController(text: widget.initialValue);
     } else {
-      widget.controller.addListener(_handleControllerChanged);
+      widget.controller?.addListener(_handleControllerChanged);
     }
 
-    if (_effectiveController.text != null && _effectiveController.text != '') {
-      _item = widget.items.firstWhere(
-        (lmItem) => lmItem['value'].toString() == _effectiveController.text,
-        orElse: () => null,
+    if (_effectiveController?.text != null &&
+        _effectiveController?.text != '') {
+      _item = widget.items?.firstWhere(
+        (lmItem) => lmItem['value'].toString() == _effectiveController?.text,
       );
 
       if (_item != null) {
-        _labelController.text = _item['label'];
+        _labelController.text = _item?['label'];
 
-        if (widget.changeIcon && _item['icon'] != null && _item['icon'] != '') {
-          _icon = _item['icon'];
+        if (widget.changeIcon &&
+            _item?['icon'] != null &&
+            _item?['icon'] != '') {
+          _icon = _item?['icon'];
         }
       }
     }
@@ -464,11 +454,11 @@ class _SelectFormFieldState extends FormFieldState<String> {
 
       if (oldWidget.controller != null && widget.controller == null) {
         _stateController =
-            TextEditingController.fromValue(oldWidget.controller.value);
+            TextEditingController.fromValue(oldWidget.controller?.value);
       }
 
       if (widget.controller != null) {
-        setValue(widget.controller.text);
+        setValue(widget.controller?.text);
 
         if (oldWidget.controller == null) {
           _stateController = null;
@@ -476,17 +466,19 @@ class _SelectFormFieldState extends FormFieldState<String> {
       }
     }
 
-    if (_effectiveController.text != null && _effectiveController.text != '') {
-      _item = widget.items.firstWhere(
-        (lmItem) => lmItem['value'] == _effectiveController.text,
-        orElse: () => null,
+    if (_effectiveController?.text != null &&
+        _effectiveController?.text != '') {
+      _item = widget.items?.firstWhere(
+        (lmItem) => lmItem['value'] == _effectiveController?.text,
       );
 
       if (_item != null) {
-        _labelController.text = _item['label'];
+        _labelController.text = _item?['label'];
 
-        if (widget.changeIcon && _item['icon'] != null && _item['icon'] != '') {
-          _icon = _item['icon'];
+        if (widget.changeIcon &&
+            _item?['icon'] != null &&
+            _item?['icon'] != '') {
+          _icon = _item?['icon'];
         }
       }
     }
@@ -504,20 +496,18 @@ class _SelectFormFieldState extends FormFieldState<String> {
     super.reset();
 
     setState(() {
-      _effectiveController.text = widget.initialValue;
+      _effectiveController?.text = widget.initialValue ?? '';
     });
   }
 
   void _handleControllerChanged() {
-    if (_effectiveController.text != value) {
-      didChange(_effectiveController.text);
+    if (_effectiveController?.text != value) {
+      didChange(_effectiveController?.text);
     }
   }
 
   void onChangedHandler(String value) {
-    if (widget.onChanged != null) {
-      widget.onChanged(value);
-    }
+    widget.onChanged?.call(value);
 
     didChange(value);
   }
@@ -530,19 +520,20 @@ class _SelectFormFieldState extends FormFieldState<String> {
       items: _renderItems(),
     );
 
-    if (lvPicked != null && lvPicked != value) {
-      _item = widget.items.firstWhere(
+    if (lvPicked != value) {
+      _item = widget.items?.firstWhere(
         (lmItem) => lmItem['value'] == lvPicked,
-        orElse: () => null,
       );
 
       if (_item != null) {
-        _labelController.text = _item['label'];
-        _effectiveController.text = lvPicked.toString();
+        _labelController.text = _item?['label'];
+        _effectiveController?.text = lvPicked.toString();
 
-        if (widget.changeIcon && _item['icon'] != null && _item['icon'] != '') {
+        if (widget.changeIcon &&
+            _item?['icon'] != null &&
+            _item?['icon'] != '') {
           setState(() {
-            _icon = _item['icon'];
+            _icon = _item?['icon'];
           });
         }
 
@@ -567,7 +558,7 @@ class _SelectFormFieldState extends FormFieldState<String> {
 
     if (lvPicked is Map<String, dynamic>) {
       _labelController.text = lvPicked['label'];
-      _effectiveController.text = lvPicked['value'].toString();
+      _effectiveController?.text = lvPicked['value'].toString();
 
       if (widget.changeIcon &&
           lvPicked['icon'] != null &&
@@ -584,7 +575,7 @@ class _SelectFormFieldState extends FormFieldState<String> {
   List<PopupMenuEntry<String>> _renderItems() {
     List<PopupMenuItem<String>> llItems = <PopupMenuItem<String>>[];
 
-    widget.items.forEach((lmElement) {
+    widget.items?.forEach((lmElement) {
       PopupMenuItem<String> loItem = PopupMenuItem<String>(
         value: lmElement['value'],
         enabled: lmElement['enable'] ?? true,
@@ -613,7 +604,7 @@ class _SelectFormFieldState extends FormFieldState<String> {
   RelativeRect _buttonMenuPosition(BuildContext poContext) {
     final RenderBox loBar = poContext.findRenderObject() as RenderBox;
     final RenderBox loOverlay =
-        Overlay.of(poContext).context.findRenderObject() as RenderBox;
+        Overlay.of(poContext)?.context.findRenderObject() as RenderBox;
     const Offset loOffset = Offset.zero;
 
     final RelativeRect loPosition = RelativeRect.fromRect(
@@ -635,14 +626,19 @@ class _SelectFormFieldState extends FormFieldState<String> {
 }
 
 class ItemPickerDialog extends StatefulWidget {
-  final String title;
-  final String searchHint;
-  final String cancelBtn;
-  final List<Map<String, dynamic>> items;
+  final String? title;
+  final String? searchHint;
+  final String? cancelBtn;
+  final List<Map<String, dynamic>>? items;
   final bool enableSearch;
 
-  ItemPickerDialog(this.title, this.items,
-      [this.enableSearch = true, this.searchHint = '', this.cancelBtn]);
+  ItemPickerDialog(
+    this.title,
+    this.items, [
+    this.enableSearch = true,
+    this.searchHint = '',
+    this.cancelBtn,
+  ]);
 
   @override
   _ItemPickerDialogState createState() => new _ItemPickerDialogState();
@@ -661,7 +657,7 @@ class _ItemPickerDialogState extends State<ItemPickerDialog> {
     _oCtrlSearchQuery.addListener(_search);
     _lItemListOriginal.clear();
     _lItemListShow.clear();
-    _lItemListOriginal.addAll(widget.items);
+    _lItemListOriginal.addAll(widget.items ?? <Map<String, dynamic>>[]);
     _lItemListShow.addAll(_lItemListOriginal);
     _iQtItems = _lItemListOriginal.length;
   }
@@ -682,10 +678,9 @@ class _ItemPickerDialogState extends State<ItemPickerDialog> {
         child: _content(),
       ),
       actions: <Widget>[
-        FlatButton(
-          padding: EdgeInsets.only(right: 20),
+        TextButton(
           onPressed: () => Navigator.of(context).pop(),
-          child: Text(widget.cancelBtn ?? 'CANCEL'),
+          child: Text(widget.cancelBtn ?? ''),
         ),
       ],
     );
@@ -698,7 +693,7 @@ class _ItemPickerDialogState extends State<ItemPickerDialog> {
 
     return Column(
       children: <Widget>[
-        Text(widget.title),
+        Text(widget.title ?? ''),
         TextField(
           controller: _oCtrlSearchQuery,
           decoration: InputDecoration(
@@ -785,23 +780,19 @@ class ListItem extends StatelessWidget {
   List<Widget> _itemList(context) {
     List<Widget> llItems = <Widget>[];
 
-    if (_lItens != null) {
-      _lItens.forEach((lmItem) {
-        Widget loIten = ListTile(
-          leading: lmItem['icon'] ?? null,
-          title: Text(
-            lmItem['label'] ?? lmItem['value'],
-            style: lmItem['textStyle'] ?? lmItem['textStyle'],
-          ),
-          enabled: lmItem['enable'] ?? true,
-          onTap: () => Navigator.pop(context, lmItem),
-        );
+    _lItens.forEach((lmItem) {
+      Widget loIten = ListTile(
+        leading: lmItem['icon'] ?? null,
+        title: Text(
+          lmItem['label'] ?? lmItem['value'],
+          style: lmItem['textStyle'] ?? lmItem['textStyle'],
+        ),
+        enabled: lmItem['enable'] ?? true,
+        onTap: () => Navigator.pop(context, lmItem),
+      );
 
-        llItems.add(loIten);
-      });
-    } else {
-      llItems.add(SizedBox(height: 0));
-    }
+      llItems.add(loIten);
+    });
 
     return llItems;
   }
