@@ -56,7 +56,7 @@ final List<Map<String, dynamic>> _items = [
 
 ``` dart
 SelectFormField(
-  type: SelectFormField.dropdown, // or can be dialog
+  type: SelectFormFieldType.dropdown, // or can be dialog
   initialValue: 'circle',
   icon: Icon(Icons.format_shapes),
   labelText: 'Shape',
