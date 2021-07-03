@@ -506,7 +506,8 @@ class _SelectFormFieldState extends FormFieldState<String> {
     }
   }
 
-  void onChangedHandler(String value) {
+  void onChangedHandler(String? value) {
+    if (value == null) return;
     widget.onChanged?.call(value);
 
     didChange(value);
