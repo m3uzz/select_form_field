@@ -514,12 +514,13 @@ class _SelectFormFieldState extends FormFieldState<String> {
   }
 
   Future<void> _showSelectFormFieldMenu() async {
-    String lvPicked = await showMenu<dynamic>(
+    String? lvPicked = await showMenu<dynamic>(
       context: context,
       position: _buttonMenuPosition(context),
       initialValue: value,
       items: _renderItems(),
     );
+    if (lvPicked == null) return;
 
     if (lvPicked != value) {
       _item = widget.items?.firstWhere(
