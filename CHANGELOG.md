@@ -1,3 +1,8 @@
+## 2.1.0 - 2021-07-07
+
+* Fixed bug of return when click outside the select items
+* Improved validation of initialValue and items parameters
+
 ## 2.0.0 - 2021-03-09
 
 * Migrate to null safety.

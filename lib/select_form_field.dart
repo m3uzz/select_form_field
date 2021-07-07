@@ -429,11 +429,12 @@ class _SelectFormFieldState extends FormFieldState<String> {
     if (_effectiveController?.text != null &&
         _effectiveController?.text != '') {
       _item = widget.items?.firstWhere(
-        (lmItem) => lmItem['value'].toString() == _effectiveController?.text,
-      );
+          (lmItem) => lmItem['value'].toString() == _effectiveController?.text,
+          orElse: () => <String, dynamic>{});
 
-      if (_item != null) {
-        _labelController.text = _item?['label'];
+      if (_item!.length > 0) {
+        _labelController.text =
+            _item!['label']?.toString() ?? _item!['value']!.toString();
 
         if (widget.changeIcon &&
             _item?['icon'] != null &&
@@ -469,11 +470,13 @@ class _SelectFormFieldState extends FormFieldState<String> {
     if (_effectiveController?.text != null &&
         _effectiveController?.text != '') {
       _item = widget.items?.firstWhere(
-        (lmItem) => lmItem['value'] == _effectiveController?.text,
+        (lmItem) => lmItem['value'].toString() == _effectiveController?.text,
+        orElse: () => <String, dynamic>{},
       );
 
-      if (_item != null) {
-        _labelController.text = _item?['label'];
+      if (_item!.length > 0) {
+        _labelController.text =
+            _item!['label']?.toString() ?? _item!['value']!.toString();
 
         if (widget.changeIcon &&
             _item?['icon'] != null &&
@@ -519,15 +522,16 @@ class _SelectFormFieldState extends FormFieldState<String> {
       initialValue: value,
       items: _renderItems(),
     );
-    if (lvPicked == null) return;
 
-    if (lvPicked != value) {
+    if (lvPicked != null && lvPicked != value) {
       _item = widget.items?.firstWhere(
-        (lmItem) => lmItem['value'] == lvPicked,
+        (lmItem) => lmItem['value'].toString() == lvPicked,
+        orElse: () => <String, dynamic>{},
       );
 
-      if (_item != null) {
-        _labelController.text = _item?['label'];
+      if (_item!.length > 0) {
+        _labelController.text =
+            _item!['label']?.toString() ?? _item!['value']!.toString();
         _effectiveController?.text = lvPicked.toString();
 
         if (widget.changeIcon &&
@@ -538,13 +542,13 @@ class _SelectFormFieldState extends FormFieldState<String> {
           });
         }
 
-        onChangedHandler(lvPicked.toString());
+        onChangedHandler(lvPicked);
       }
     }
   }
 
   Future<void> _showSelectFormFieldDialog() async {
-    Map<String, dynamic> lvPicked = await showDialog<dynamic>(
+    Map<String, dynamic>? lvPicked = await showDialog<dynamic>(
       context: context,
       builder: (BuildContext context) {
         return ItemPickerDialog(
@@ -558,7 +562,8 @@ class _SelectFormFieldState extends FormFieldState<String> {
     );
 
     if (lvPicked is Map<String, dynamic>) {
-      _labelController.text = lvPicked['label'];
+      _labelController.text =
+          lvPicked['label']?.toString() ?? lvPicked['value']!.toString();
       _effectiveController?.text = lvPicked['value'].toString();
 
       if (widget.changeIcon &&
@@ -578,7 +583,7 @@ class _SelectFormFieldState extends FormFieldState<String> {
 
     widget.items?.forEach((lmElement) {
       PopupMenuItem<String> loItem = PopupMenuItem<String>(
-        value: lmElement['value'],
+        value: lmElement['value'].toString(),
         enabled: lmElement['enable'] ?? true,
         textStyle: lmElement['textStyle'] ?? lmElement['textStyle'],
         child: Row(
@@ -586,7 +591,8 @@ class _SelectFormFieldState extends FormFieldState<String> {
             lmElement['icon'] ?? SizedBox(width: 5),
             Expanded(
               child: Text(
-                lmElement['label'] ?? lmElement['value'],
+                lmElement['label']?.toString() ??
+                    lmElement['value']!.toString(),
                 overflow: TextOverflow.fade,
                 maxLines: 1,
                 softWrap: false,
@@ -743,7 +749,8 @@ class _ItemPickerDialogState extends State<ItemPickerDialog> {
         _lItemListShow.clear();
 
         _lItemListOriginal.forEach((loCredential) {
-          lsValue = loCredential['label'].toLowerCase();
+          lsValue = loCredential['label']?.toString().toLowerCase() ??
+              loCredential['value']!.toString().toLowerCase();
 
           if (lsValue.contains(lsQuery)) {
             _lItemListShow.add(loCredential);
@@ -785,7 +792,7 @@ class ListItem extends StatelessWidget {
       Widget loIten = ListTile(
         leading: lmItem['icon'] ?? null,
         title: Text(
-          lmItem['label'] ?? lmItem['value'],
+          lmItem['label']?.toString() ?? lmItem['value']!.toString(),
           style: lmItem['textStyle'] ?? lmItem['textStyle'],
         ),
         enabled: lmItem['enable'] ?? true,

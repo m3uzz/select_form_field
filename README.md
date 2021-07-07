@@ -2,6 +2,8 @@
 
 [![pub package](https://img.shields.io/pub/v/select_form_field.svg)](https://pub.dartlang.org/packages/select_form_field)
 
+<a href="https://www.buymeacoffee.com/hslbetto" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-blue.png" alt="Buy Me A Beer" style="width: 150px !important;"></a>
+
 A Flutter select field widget. It shows a list of options in a dropdown menu.\
 This widget extend TextField and has a similar behavior as TextFormField
 
@@ -12,7 +14,7 @@ In the `pubspec.yaml` of your flutter project, add the following dependency:
 ```yaml
 dependencies:
   ...
-  select_form_field: "^2.0.0"
+  select_form_field: "^2.1.0"
 ```
 
 In your library add the following import:

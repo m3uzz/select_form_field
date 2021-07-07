@@ -48,12 +48,46 @@ class _MyHomePageState extends State<MyHomePage> {
     },
   ];
 
+  /*final List<Map<String, dynamic>> _items = [
+    {'value': 1},
+    {'value': 2},
+    {'value': 3},
+    {'value': 4},
+    {'value': 5},
+    {'value': 6},
+    {'value': 7},
+    {'value': 8},
+    {'value': 9},
+    {'value': 10},
+    {'value': 11},
+    {'value': 12},
+    {'value': 13},
+    {'value': 14},
+    {'value': 15},
+    {'value': 16},
+    {'value': 17},
+    {'value': 18},
+    {'value': 19},
+    {'value': 20},
+    {'value': 21},
+    {'value': 22},
+    {'value': 23},
+    {'value': 24},
+    {'value': 25},
+    {'value': 26},
+    {'value': 27},
+    {'value': 28},
+    {'value': 29},
+    {'value': 30},
+    {'value': 31},
+  ];*/
+
   @override
   void initState() {
     super.initState();
 
     //_initialValue = 'starValue';
-    _controller = TextEditingController(text: 'starValue');
+    _controller = TextEditingController(text: '2');
 
     _getValue();
   }
@@ -82,7 +116,7 @@ class _MyHomePageState extends State<MyHomePage> {
           child: Column(
             children: <Widget>[
               SelectFormField(
-                //type: SelectFormFieldType.dialog,
+                type: SelectFormFieldType.dialog,
                 controller: _controller,
                 //initialValue: _initialValue,
                 icon: Icon(Icons.format_shapes),
