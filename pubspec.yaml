@@ -1,6 +1,6 @@
 name: select_form_field
 description: A Flutter select form field widget. It shows a list of options in a dropdown menu.
-version: 2.1.0
+version: 2.2.0
 homepage: https://github.com/m3uzz/select_form_field
 
 environment:

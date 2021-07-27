@@ -176,6 +176,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     _valueChanged = '';
                     _valueToValidate = '';
                     _valueSaved = '';
+                    _controller?.clear();
                   });
                 },
                 child: Text('Reset'),

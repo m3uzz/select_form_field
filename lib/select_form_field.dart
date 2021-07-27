@@ -426,6 +426,10 @@ class _SelectFormFieldState extends FormFieldState<String> {
       widget.controller?.addListener(_handleControllerChanged);
     }
 
+    initValues();
+  }
+
+  void initValues() {
     if (_effectiveController?.text != null &&
         _effectiveController?.text != '') {
       widget.items?.forEach((Map<String, dynamic> lmItem) {
@@ -487,6 +491,11 @@ class _SelectFormFieldState extends FormFieldState<String> {
           _icon = _item?['icon'];
         }
       }
+    } else {
+      _labelController.clear();
+      _icon = widget.icon;
+
+      initValues();
     }
   }
 
