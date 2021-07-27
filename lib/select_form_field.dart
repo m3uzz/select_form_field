@@ -408,7 +408,7 @@ class _SelectFormFieldState extends FormFieldState<String> {
   TextEditingController _labelController = TextEditingController();
   TextEditingController? _stateController;
   Widget? _icon;
-  Map<String, dynamic>? _item;
+  Map<String, dynamic>? _item = <String, dynamic>{};
 
   @override
   SelectFormField get widget => super.widget as SelectFormField;
@@ -428,9 +428,12 @@ class _SelectFormFieldState extends FormFieldState<String> {
 
     if (_effectiveController?.text != null &&
         _effectiveController?.text != '') {
-      _item = widget.items?.firstWhere(
-          (lmItem) => lmItem['value'].toString() == _effectiveController?.text,
-          orElse: () => <String, dynamic>{});
+      widget.items?.forEach((Map<String, dynamic> lmItem) {
+        if (lmItem['value'].toString() == _effectiveController?.text) {
+          _item = lmItem;
+          return;
+        }
+      });
 
       if (_item!.length > 0) {
         _labelController.text =
