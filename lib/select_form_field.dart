@@ -217,7 +217,9 @@ class SelectFormField extends FormField<String> {
                     width: 10,
                     margin: EdgeInsets.all(0),
                     child: TextButton(
-                      onPressed: () {},
+                      onPressed: type == SelectFormFieldType.dialog
+                          ? state._showSelectFormFieldDialog
+                          : state._showSelectFormFieldMenu,
                       child: Icon(Icons.arrow_drop_down),
                     ),
                   ),
