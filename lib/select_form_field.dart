@@ -517,6 +517,21 @@ class _SelectFormFieldState extends FormFieldState<String> {
 
   void _handleControllerChanged() {
     if (_effectiveController?.text != value) {
+      _item = widget.items?.firstWhere(
+        (lmItem) => lmItem['value'].toString() == _effectiveController?.text,
+        orElse: () => <String, dynamic>{},
+      );
+
+      if (_item!.length > 0) {
+        _labelController.text =
+            _item!['label']?.toString() ?? _item!['value']!.toString();
+
+        if (widget.changeIcon &&
+            _item?['icon'] != null &&
+            _item?['icon'] != '') {
+          _icon = _item?['icon'];
+        }
+      }
       didChange(_effectiveController?.text);
     }
   }
