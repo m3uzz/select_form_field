@@ -217,7 +217,9 @@ class SelectFormField extends FormField<String> {
                     width: 10,
                     margin: EdgeInsets.all(0),
                     child: TextButton(
-                      onPressed: () {},
+                      onPressed: type == SelectFormFieldType.dialog
+                          ? state._showSelectFormFieldDialog
+                          : state._showSelectFormFieldMenu,
                       child: Icon(Icons.arrow_drop_down),
                     ),
                   ),
@@ -517,6 +519,21 @@ class _SelectFormFieldState extends FormFieldState<String> {
 
   void _handleControllerChanged() {
     if (_effectiveController?.text != value) {
+      _item = widget.items?.firstWhere(
+        (lmItem) => lmItem['value'].toString() == _effectiveController?.text,
+        orElse: () => <String, dynamic>{},
+      );
+
+      if (_item!.length > 0) {
+        _labelController.text =
+            _item!['label']?.toString() ?? _item!['value']!.toString();
+
+        if (widget.changeIcon &&
+            _item?['icon'] != null &&
+            _item?['icon'] != '') {
+          _icon = _item?['icon'];
+        }
+      }
       didChange(_effectiveController?.text);
     }
   }
