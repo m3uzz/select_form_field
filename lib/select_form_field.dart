@@ -217,7 +217,19 @@ class SelectFormField extends FormField<String> {
                     width: 10,
                     margin: EdgeInsets.all(0),
                     child: TextButton(
-                      onPressed: () {},
+                      onPressed: () async {
+                        var lfOnTap;
+                        if (readOnly == false) {
+                          switch (type) {
+                            case SelectFormFieldType.dialog:
+                              lfOnTap = state._showSelectFormFieldDialog;
+                              break;
+                            default:
+                              lfOnTap = state._showSelectFormFieldMenu;
+                          }
+                        }
+                        await lfOnTap();
+                        },
                       child: Icon(Icons.arrow_drop_down),
                     ),
                   ),
