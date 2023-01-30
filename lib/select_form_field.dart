@@ -476,10 +476,12 @@ class _SelectFormFieldState extends FormFieldState<String> {
 
     if (_effectiveController?.text != null &&
         _effectiveController?.text != '') {
-      _item = widget.items?.firstWhere(
-        (lmItem) => lmItem['value'].toString() == _effectiveController?.text,
-        orElse: () => <String, dynamic>{},
-      );
+      widget.items?.forEach((Map<String, dynamic> lmItem) {
+        if (lmItem['value'].toString() == _effectiveController?.text) {
+          _item = lmItem;
+          return;
+        }
+      });
 
       if (_item!.length > 0) {
         _labelController.text =
@@ -536,10 +538,12 @@ class _SelectFormFieldState extends FormFieldState<String> {
     );
 
     if (lvPicked != null && lvPicked != value) {
-      _item = widget.items?.firstWhere(
-        (lmItem) => lmItem['value'].toString() == lvPicked,
-        orElse: () => <String, dynamic>{},
-      );
+      widget.items?.forEach((Map<String, dynamic> lmItem) {
+        if (lmItem['value'].toString() == lvPicked) {
+          _item = lmItem;
+          return;
+        }
+      });
 
       if (_item!.length > 0) {
         _labelController.text =
