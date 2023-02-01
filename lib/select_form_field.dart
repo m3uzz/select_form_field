@@ -208,7 +208,7 @@ class SelectFormField extends FormField<String> {
           builder: (FormFieldState<String> field) {
             final _SelectFormFieldState state = field as _SelectFormFieldState;
 
-            final InputDecoration effectiveDecoration = (decoration ??
+                     final InputDecoration effectiveDecoration = (decoration ??
                 InputDecoration(
                   labelText: labelText,
                   icon: state._icon ?? icon,
@@ -217,7 +217,17 @@ class SelectFormField extends FormField<String> {
                     width: 10,
                     margin: EdgeInsets.all(0),
                     child: TextButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        if (readOnly == false) {
+                          switch (type) {
+                            case SelectFormFieldType.dialog:
+                              state._showSelectFormFieldDialog.call();
+                              break;
+                            default:
+                              state._showSelectFormFieldMenu.call();
+                          }
+                        }
+                      },
                       child: Icon(Icons.arrow_drop_down),
                     ),
                   ),
