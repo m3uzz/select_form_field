@@ -217,7 +217,9 @@ class SelectFormField extends FormField<String> {
                     width: 10,
                     margin: EdgeInsets.all(0),
                     child: TextButton(
-                      onPressed: () {},
+                      onPressed: type == SelectFormFieldType.dialog
+                          ? state._showSelectFormFieldDialog
+                          : state._showSelectFormFieldMenu,
                       child: Icon(Icons.arrow_drop_down),
                     ),
                   ),
@@ -627,7 +629,7 @@ class _SelectFormFieldState extends FormFieldState<String> {
   RelativeRect _buttonMenuPosition(BuildContext poContext) {
     final RenderBox loBar = poContext.findRenderObject() as RenderBox;
     final RenderBox loOverlay =
-        Overlay.of(poContext)?.context.findRenderObject() as RenderBox;
+        Overlay.of(poContext).context.findRenderObject() as RenderBox;
     const Offset loOffset = Offset.zero;
 
     final RelativeRect loPosition = RelativeRect.fromRect(
