@@ -217,7 +217,9 @@ class SelectFormField extends FormField<String> {
                     width: 10,
                     margin: EdgeInsets.all(0),
                     child: TextButton(
-                      onPressed: () {},
+                      onPressed: type == SelectFormFieldType.dialog
+                          ? state._showSelectFormFieldDialog
+                          : state._showSelectFormFieldMenu,
                       child: Icon(Icons.arrow_drop_down),
                     ),
                   ),
@@ -476,10 +478,12 @@ class _SelectFormFieldState extends FormFieldState<String> {
 
     if (_effectiveController?.text != null &&
         _effectiveController?.text != '') {
-      _item = widget.items?.firstWhere(
-        (lmItem) => lmItem['value'].toString() == _effectiveController?.text,
-        orElse: () => <String, dynamic>{},
-      );
+      widget.items?.forEach((Map<String, dynamic> lmItem) {
+        if (lmItem['value'].toString() == _effectiveController?.text) {
+          _item = lmItem;
+          return;
+        }
+      });
 
       if (_item!.length > 0) {
         _labelController.text =
@@ -536,10 +540,12 @@ class _SelectFormFieldState extends FormFieldState<String> {
     );
 
     if (lvPicked != null && lvPicked != value) {
-      _item = widget.items?.firstWhere(
-        (lmItem) => lmItem['value'].toString() == lvPicked,
-        orElse: () => <String, dynamic>{},
-      );
+      widget.items?.forEach((Map<String, dynamic> lmItem) {
+        if (lmItem['value'].toString() == lvPicked) {
+          _item = lmItem;
+          return;
+        }
+      });
 
       if (_item!.length > 0) {
         _labelController.text =
@@ -623,7 +629,7 @@ class _SelectFormFieldState extends FormFieldState<String> {
   RelativeRect _buttonMenuPosition(BuildContext poContext) {
     final RenderBox loBar = poContext.findRenderObject() as RenderBox;
     final RenderBox loOverlay =
-        Overlay.of(poContext)?.context.findRenderObject() as RenderBox;
+        Overlay.of(poContext).context.findRenderObject() as RenderBox;
     const Offset loOffset = Offset.zero;
 
     final RelativeRect loPosition = RelativeRect.fromRect(
